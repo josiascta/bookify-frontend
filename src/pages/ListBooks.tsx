@@ -27,8 +27,8 @@ export function ListBooks() {
   }, []); 
   
 
-  function handleEdit(book: Book) {
-    navigate("/createBook", { state: { book } });
+  function handleEdit(id: number) {
+    navigate(`/createBook/${id}`);
   }
 
   function handleDelete(id: number) {
@@ -59,7 +59,7 @@ export function ListBooks() {
               </div>
               <div className="flex space-x-2">
                 <button
-                  onClick={() => handleEdit(book)}
+                  onClick={() => handleEdit(book.id)}
                   className="px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition"
                 >
                   Editar

@@ -12,7 +12,7 @@ export function AppRoutes() {
       <Route path="/" element={<Layout />}>
         
         <Route path="/createBook" element={<CreateBook />} />
-        
+        <Route path="/createBook/:id" element={<CreateBook />} />
         <Route path="/listBooks" element={<ListBooks />} />
 
       </Route>

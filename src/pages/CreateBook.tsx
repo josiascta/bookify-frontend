@@ -1,5 +1,6 @@
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 type FormData = {
   nomeLivro: string;
@@ -15,7 +16,7 @@ type Autor = {
 };
 
 export function CreateBook() {
-  const { control, handleSubmit, reset} = useForm<FormData>({
+  const { control, handleSubmit, reset, setValue} = useForm<FormData>({
     defaultValues: {
       nomeLivro: "",
       quantidadeEstoque: 0,
@@ -26,6 +27,8 @@ export function CreateBook() {
   });
   const [categorias, setCategorias] = useState<string[]>([]);
   const [autores, setAutores] = useState<Autor[]>([]);
+  const [livroId, setLivroId] = useState<number | null>(null);
+  const { id } = useParams();
 
   async function retornarCategorias() {
     const categorias = await fetch("http://localhost:8080/categoria");
@@ -40,28 +43,64 @@ export function CreateBook() {
     setAutores(data);
   }
 
+  async function carregarLivro(id: number) {
+    const response = await fetch(`http://localhost:8080/livro/${id}`);
+    const data = await response.json();
+    
+    const autoresIds = data.autores.map((autor: { id: number }) => autor.id);
+    reset({
+      nomeLivro: data.title,
+      quantidadeEstoque: data.quantity_stock,
+      preco: data.price,
+      categoria: String(data.category.id),
+      autores: autoresIds,
+    });
+
+    console.log(autoresIds)
+
+    setValue("categoria", String(data.category.id));
+    
+  }
+
   useEffect(() => {
     retornarCategorias();
     retornarAutores();
   }, []);
 
+  useEffect(() => {
+    if (id) {
+      setLivroId(Number(id));
+      carregarLivro(Number(id));
+    }
+  }, [id]);
+
   async function onSubmit(data: FormData) {
-    await fetch("http://localhost:8080/livro", {
-      method: "POST",
-      headers:{
+    const metodo = livroId ? "PUT" : "POST";
+    const url = livroId ? `http://localhost:8080/livro/${livroId}` : "http://localhost:8080/livro";
+  
+    await fetch(url, {
+      method: metodo,
+      headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "title": data.nomeLivro,
-        "quantity_stock": data.quantidadeEstoque,
-        "price": data.preco,
-        "autores_ids": data.autores,
-        "category": data.categoria
+        title: data.nomeLivro,
+        quantity_stock: data.quantidadeEstoque,
+        price: data.preco,
+        autores_ids: data.autores,
+        category: data.categoria
       })
-    })
-
-    alert("Livro cadastrado com sucesso!")
-    reset()
+    });
+  
+    alert(livroId ? "Livro atualizado com sucesso!" : "Livro cadastrado com sucesso!");
+    setLivroId(null); 
+    reset({ 
+      nomeLivro: "",
+      quantidadeEstoque: 0,
+      preco: 0,
+      categoria: "",
+      autores: [],
+    });
   }
 
   return (
