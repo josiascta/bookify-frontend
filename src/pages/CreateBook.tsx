@@ -1,24 +1,67 @@
 import { Controller, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 
 type FormData = {
   nomeLivro: string;
   quantidadeEstoque: number;
   preco: number;
   categoria: string;
+  autores: number[];
+};
+
+type Autor = {
+  id: number;
+  name: string;
 };
 
 export function CreateBook() {
-  const { control, handleSubmit } = useForm<FormData>({
+  const { control, handleSubmit, reset} = useForm<FormData>({
     defaultValues: {
       nomeLivro: "",
       quantidadeEstoque: 0,
       preco: 0,
       categoria: "",
+      autores: [],
     },
   });
+  const [categorias, setCategorias] = useState<string[]>([]);
+  const [autores, setAutores] = useState<Autor[]>([]);
 
-  function onSubmit(data: FormData) {
-    console.log(data);
+  async function retornarCategorias() {
+    const categorias = await fetch("http://localhost:8080/categoria");
+    const data = await categorias.json();
+    setCategorias(data);
+  }
+
+  async function retornarAutores() {
+    const autores = await fetch("http://localhost:8080/autor/all");
+    const data = await autores.json();
+    console.log(data)
+    setAutores(data);
+  }
+
+  useEffect(() => {
+    retornarCategorias();
+    retornarAutores();
+  }, []);
+
+  async function onSubmit(data: FormData) {
+    await fetch("http://localhost:8080/livro", {
+      method: "POST",
+      headers:{
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        "title": data.nomeLivro,
+        "quantity_stock": data.quantidadeEstoque,
+        "price": data.preco,
+        "autores_ids": data.autores,
+        "category": data.categoria
+      })
+    })
+
+    alert("Livro cadastrado com sucesso!")
+    reset()
   }
 
   return (
@@ -30,7 +73,10 @@ export function CreateBook() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label htmlFor="nomeLivro" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="nomeLivro"
+              className="block text-sm font-medium text-gray-700"
+            >
               Nome do livro
             </label>
             <Controller
@@ -49,7 +95,10 @@ export function CreateBook() {
           </div>
 
           <div>
-            <label htmlFor="quantidadeEstoque" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="quantidadeEstoque"
+              className="block text-sm font-medium text-gray-700"
+            >
               Quantidade em estoque
             </label>
             <Controller
@@ -68,7 +117,10 @@ export function CreateBook() {
           </div>
 
           <div>
-            <label htmlFor="preco" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="preco"
+              className="block text-sm font-medium text-gray-700"
+            >
               Preço
             </label>
             <Controller
@@ -87,7 +139,10 @@ export function CreateBook() {
           </div>
 
           <div>
-            <label htmlFor="categoria" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="categoria"
+              className="block text-sm font-medium text-gray-700"
+            >
               Categoria
             </label>
             <Controller
@@ -102,8 +157,41 @@ export function CreateBook() {
                   <option value="" disabled>
                     Selecione a categoria...
                   </option>
-                  <option value="TERROR">Terror</option>
-                  <option value="ROMANCE">Romance</option>
+                  {categorias.map((categoria) => (
+                    <option key={categoria} value={categoria}>
+                      {categoria}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="autores"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Autores
+            </label>
+            <Controller
+              control={control}
+              name="autores"
+              render={({ field }) => (
+                <select
+                  id="autores"
+                  multiple
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => {
+                    const selectedOptions = Array.from(e.target.selectedOptions).map(option => Number(option.value));
+                    field.onChange(selectedOptions);
+                  }}
+                >
+                  {autores.map((autor) => (
+                    <option key={autor.id} value={autor.id}>
+                      {autor.name}
+                    </option>
+                  ))}
                 </select>
               )}
             />
@@ -120,4 +208,3 @@ export function CreateBook() {
     </div>
   );
 }
-
