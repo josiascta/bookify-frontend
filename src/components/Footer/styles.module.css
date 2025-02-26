@@ -1,0 +1,36 @@
+.footer {
+    background-color: #6c9ff0; /* Mantendo o azul */
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+  
+  .fixed-icons {
+    position: fixed;  /* Mantém fixo na tela */
+    top: 50%;  /* Alinha no meio da tela verticalmente */
+    left: 50%;  /* Alinha no meio da tela horizontalmente */
+    transform: translate(-50%, -50%); /* Centraliza completamente */
+    display: flex;
+    justify-content: center; /* Mantém os ícones alinhados na horizontal */
+    gap: 20px; /* Espaçamento entre os ícones */
+    background-color: rgba(255, 255, 255, 0.1); /* Fundo sutil (opcional) */
+    padding: 10px;
+    border-radius: 10px; /* Bordas arredondadas */
+  }
+  
+  .fixed-icons a {
+    color: black; /* Cor dos ícones */
+    font-size: 24px;
+    text-decoration: none;
+    transition: transform 0.2s, color 0.2s;
+  }
+  
+  .fixed-icons a:hover {
+    transform: scale(1.2);
+    color: #6c9ff0; /* Cor ao passar o mouse */
+  }
+  
