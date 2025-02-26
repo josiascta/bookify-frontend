@@ -104,7 +104,7 @@ export function CreateBook() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen my-10">
       <div className="max-w-lg w-full p-6 bg-white rounded-lg shadow-md">
         <a href="/" className="text-blue-500 hover:underline mb-4 block">
           Voltar
