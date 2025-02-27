@@ -4,7 +4,6 @@ import { Layout } from "../components/Layout";
 import { CreateBook } from "../pages/CreateBook";
 import { ListBooks } from "../pages/ListBooks";
 
-
 export function AppRoutes() {
   return (
     <Routes>
