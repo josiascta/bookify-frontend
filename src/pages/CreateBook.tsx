@@ -39,7 +39,6 @@ export function CreateBook() {
   async function retornarAutores() {
     const autores = await fetch("http://localhost:8080/autor/all");
     const data = await autores.json();
-    console.log(data)
     setAutores(data);
   }
 
@@ -52,13 +51,9 @@ export function CreateBook() {
       nomeLivro: data.title,
       quantidadeEstoque: data.quantity_stock,
       preco: data.price,
-      categoria: String(data.category.id),
+      categoria: data.category,
       autores: autoresIds,
     });
-
-    console.log(autoresIds)
-
-    setValue("categoria", String(data.category.id));
     
   }
 
@@ -75,6 +70,7 @@ export function CreateBook() {
   }, [id]);
 
   async function onSubmit(data: FormData) {
+    console.log(data)
     const metodo = livroId ? "PUT" : "POST";
     const url = livroId ? `http://localhost:8080/livro/${livroId}` : "http://localhost:8080/livro";
   
@@ -221,6 +217,7 @@ export function CreateBook() {
                   id="autores"
                   multiple
                   className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={field.value?.map(String) || []}
                   onChange={(e) => {
                     const selectedOptions = Array.from(e.target.selectedOptions).map(option => Number(option.value));
                     field.onChange(selectedOptions);
