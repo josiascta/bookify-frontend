@@ -33,26 +33,35 @@ export function Header() {
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
               <a
-                href="/createBook"
+                onClick={() => {
+                  nav("/createBook");
+                  toggleDropdown()
+                }}
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 Cadastrar Livro
               </a>
               <a
-                href="/listBooks"
+                onClick={() => {
+                  nav("/listBooks");
+                  toggleDropdown()
+                }}
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 Listar Livro
               </a>
-
             </div>
           )}
         </div>
 
         <div className="h-8 border-r border-gray-300 mx-4"></div>
-        <a href="#" className="text-blue-500 font-bold">Carrinho</a>
+        <a href="#" className="text-blue-500 font-bold">
+          Carrinho
+        </a>
         <div className="h-8 border-r border-gray-300 mx-4"></div>
-        <a href="#" className="text-blue-500 font-bold">Login/Registrar</a>
+        <a href="#" className="text-blue-500 font-bold">
+          Login/Registrar
+        </a>
       </div>
     </header>
   );

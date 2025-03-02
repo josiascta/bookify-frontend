@@ -16,7 +16,7 @@ type Autor = {
 };
 
 export function CreateBook() {
-  const { control, handleSubmit, reset, setValue} = useForm<FormData>({
+  const { control, handleSubmit, reset } = useForm<FormData>({
     defaultValues: {
       nomeLivro: "",
       quantidadeEstoque: 0,
@@ -45,7 +45,7 @@ export function CreateBook() {
   async function carregarLivro(id: number) {
     const response = await fetch(`http://localhost:8080/livro/${id}`);
     const data = await response.json();
-    
+
     const autoresIds = data.autores.map((autor: { id: number }) => autor.id);
     reset({
       nomeLivro: data.title,
@@ -54,7 +54,6 @@ export function CreateBook() {
       categoria: data.category,
       autores: autoresIds,
     });
-    
   }
 
   useEffect(() => {
@@ -70,27 +69,33 @@ export function CreateBook() {
   }, [id]);
 
   async function onSubmit(data: FormData) {
-    console.log(data)
+    console.log(data);
     const metodo = livroId ? "PUT" : "POST";
-    const url = livroId ? `http://localhost:8080/livro/${livroId}` : "http://localhost:8080/livro";
-  
+    const url = livroId
+      ? `http://localhost:8080/livro/${livroId}`
+      : "http://localhost:8080/livro";
+
     await fetch(url, {
       method: metodo,
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         title: data.nomeLivro,
         quantity_stock: data.quantidadeEstoque,
         price: data.preco,
         autores_ids: data.autores,
-        category: data.categoria
-      })
+        category: data.categoria,
+      }),
     });
-  
-    alert(livroId ? "Livro atualizado com sucesso!" : "Livro cadastrado com sucesso!");
-    setLivroId(null); 
-    reset({ 
+
+    alert(
+      livroId
+        ? "Livro atualizado com sucesso!"
+        : "Livro cadastrado com sucesso!"
+    );
+    setLivroId(null);
+    reset({
       nomeLivro: "",
       quantidadeEstoque: 0,
       preco: 0,
@@ -219,7 +224,9 @@ export function CreateBook() {
                   className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={field.value?.map(String) || []}
                   onChange={(e) => {
-                    const selectedOptions = Array.from(e.target.selectedOptions).map(option => Number(option.value));
+                    const selectedOptions = Array.from(
+                      e.target.selectedOptions
+                    ).map((option) => Number(option.value));
                     field.onChange(selectedOptions);
                   }}
                 >
