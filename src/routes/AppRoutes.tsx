@@ -3,10 +3,16 @@ import { NotFound } from "../pages/NotFound";
 import { Layout } from "../components/Layout";
 import { CreateBook } from "../pages/CreateBook";
 import { ListBooks } from "../pages/ListBooks";
+import { Login } from "../pages/Login";
+import { Register } from "../pages/Register";
 
 export function AppRoutes() {
   return (
     <Routes>
+       
+       <Route path="/Register" element={<Register />} />
+      
+       <Route path="/Login" element={<Login />} />
       
       <Route path="/" element={<Layout />}>
         

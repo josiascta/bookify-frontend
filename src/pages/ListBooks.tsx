@@ -6,7 +6,7 @@ interface Book {
   title: string;
   quantity_stock: number;
   price: number;
-  autores: { nome: string }[];
+  autores: { name: string }[];
   category: string;
 }
 
@@ -52,7 +52,7 @@ export function ListBooks() {
             <li key={book.id} className="p-4 border rounded-md shadow-sm flex justify-between items-center bg-gray-50 hover:shadow-lg transition-shadow">
               <div>
                 <p className="text-lg font-medium text-gray-900">{book.title}</p>
-                <p className="text-sm text-gray-600">Autor: {book.autores?.map(a => a.nome).join(", ")}</p>
+                <p className="text-sm text-gray-600">Autor: {book.autores?.length ? book.autores.map(a => a.name).join(", ") : "Sem autor"}</p>
                 <p className="text-sm text-gray-600">Categoria: {book.category.charAt(0).toUpperCase() + book.category.slice(1).toLowerCase()}</p>
                 <p className="text-sm text-gray-600">Estoque: {book.quantity_stock}</p>
                 <p className="text-sm text-gray-600">Preço: R$ {book.price.toFixed(2)}</p>
