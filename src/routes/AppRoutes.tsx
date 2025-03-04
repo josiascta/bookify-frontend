@@ -5,6 +5,8 @@ import { CreateBook } from "../pages/CreateBook";
 import { ListBooks } from "../pages/ListBooks";
 import { Login } from "../pages/Login";
 import { Register } from "../pages/Register";
+import { Home } from "../pages/Home";
+
 
 export function AppRoutes() {
   return (
@@ -15,7 +17,7 @@ export function AppRoutes() {
        <Route path="/Login" element={<Login />} />
       
       <Route path="/" element={<Layout />}>
-        
+        <Route index element={<Home />} />
         <Route path="/createBook" element={<CreateBook />} />
         <Route path="/createBook/:id" element={<CreateBook />} />
         <Route path="/listBooks" element={<ListBooks />} />

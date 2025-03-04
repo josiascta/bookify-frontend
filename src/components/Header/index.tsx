@@ -59,15 +59,10 @@ export function Header() {
           Carrinho
         </a>
         <div className="h-8 border-r border-gray-300 mx-4"></div>
-<<<<<<< HEAD
-        
-=======
-        
         {/* Botão de Login com redirecionamento */}
         <button onClick={() => nav("/login")} className="text-blue-500 font-bold">
           Login/Registrar
         </button>
->>>>>>> 3acd9d2 (Pagina Login/Register)
       </div>
     </header>
   );
