@@ -6,12 +6,16 @@ import { ClientRoutes } from "./ClientRoutes";
 import { Loading } from "../components/Loading/Loading";
 
 export function Routes() {
-  const { session } = useAuth();
+  const { session, isLoadingSession } = useAuth();
   const isLoading = false;
+
+  if (isLoadingSession) {
+    return <Loading />; 
+  }
 
   function RouteSelector() {
     const role = session?.cargos[0];
-
+    
     switch (role) {
       case "ADMIN":
         return <AdminRoutes />;
