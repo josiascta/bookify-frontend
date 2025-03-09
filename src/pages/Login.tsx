@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useAuth } from "../hooks/useAuth";
+import iconLivro from "../assets/icons/livroBlue.png"
 
 type CustomJwtPayload = JwtPayload & {
   roles?: string[];
@@ -16,52 +17,58 @@ export function Login() {
   const [nome, setNome] = useState("");
   const [senha, setSenha] = useState("");
   const navigate = useNavigate();
-  const { session, save } = useAuth();
-
+  const { save } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   async function login(loginDTO: Login) {
-    const response = await fetch("http://localhost:8080/auth/token", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(loginDTO),
-    });
-
-    if (!response.ok) {
-      throw new Error("Erro ao fazer login");
-    }
-
-    const token = await response.text();
-    localStorage.setItem("token", token);
-
-    const decoded: CustomJwtPayload = jwtDecode(token);
-    const idUser = decoded.sub;
-
-    const responseInfoUser = await fetch(`http://localhost:8080/auth/${idUser}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-    });
-    const reponseJson = await responseInfoUser.json()
-    if (!response.ok) {
-      throw new Error("Erro ao fazer login");
-    }
-
-    save(reponseJson);
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); 
-    const loginDTO: Login = { login: nome, senha: senha };
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     try {
-      await login(loginDTO);
+      const response = await fetch("http://localhost:8080/auth/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginDTO),
+      });
 
+      if (!response.ok) {
+        throw new Error("Erro ao fazer login");
+      }
+
+      const token = await response.text();
+      localStorage.setItem("token", token);
+
+      const decoded: CustomJwtPayload = jwtDecode(token);
+      const idUser = decoded.sub;
+
+      const responseInfoUser = await fetch(
+        `http://localhost:8080/auth/${idUser}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const reponseJson = await responseInfoUser.json();
+      if (!response.ok) {
+        throw new Error("Erro ao obter informações do usuário");
+      }
+
+      save(reponseJson);
       navigate("/");
     } catch (error) {
       console.error(error);
       alert("Erro ao fazer login");
+    } finally {
+      setLoading(false);
     }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const loginDTO: Login = { login: nome, senha: senha };
+    await login(loginDTO);
   };
 
   return (
@@ -97,9 +104,22 @@ export function Login() {
 
             <button
               type="submit"
-              className="w-full bg-black text-white py-2 rounded-md"
+              className={`w-full flex items-center justify-center gap-2 py-2 rounded-md text-white transition-all 
+                ${
+                  loading
+                    ? "bg-gray-700 cursor-not-allowed"
+                    : "bg-black hover:bg-gray-800"
+                }`}
+              disabled={loading}
             >
-              Entrar
+              {loading && (
+                <img
+                  src={iconLivro} 
+                  alt="Livro girando"
+                  className="w-5 h-5 animate-spin" 
+                />
+              )}
+              {loading ? "Entrando..." : "Entrar"}
             </button>
           </form>
 
