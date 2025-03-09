@@ -2,9 +2,12 @@ import styles from "./styles.module.css";
 import logo from "../../assets/logoImg.png";
 import iconBaixo from "../../assets/icons/setaBaixo.png";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
+import { FaUser } from "react-icons/fa";
+import { useAuth } from "../../hooks/useAuth";
 
 export function Header() {
+  const {session} = useAuth()
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const nav = useNavigate();
 
@@ -32,24 +35,24 @@ export function Header() {
 
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-              <a
+              <Link
+                to="/createBook"
                 onClick={() => {
-                  nav("/createBook");
-                  toggleDropdown()
+                  toggleDropdown();
                 }}
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 Cadastrar Livro
-              </a>
-              <a
+              </Link>
+              <Link
+                to="/listBooks"
                 onClick={() => {
-                  nav("/listBooks");
-                  toggleDropdown()
+                  toggleDropdown();
                 }}
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 Listar Livro
-              </a>
+              </Link>
             </div>
           )}
         </div>
@@ -60,8 +63,12 @@ export function Header() {
         </a>
         <div className="h-8 border-r border-gray-300 mx-4"></div>
         {/* Botão de Login com redirecionamento */}
-        <button onClick={() => nav("/login")} className="text-blue-500 font-bold">
-          Login/Registrar
+        <button
+          onClick={() => nav("/profile")}
+          className="text-blue-500 font-bold flex items-center justify-center gap-1 cursor-pointer"
+        >
+          <FaUser />
+          <p>{session?.nome}</p>
         </button>
       </div>
     </header>

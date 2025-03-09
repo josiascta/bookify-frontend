@@ -31,15 +31,27 @@ export function CreateBook() {
   const { id } = useParams();
 
   async function retornarCategorias() {
-    const categorias = await fetch("http://localhost:8080/categoria");
-    const data = await categorias.json();
-    setCategorias(data);
+    const token = localStorage.getItem("token");
+  
+    const response = await fetch("http://localhost:8080/categoria", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  
+    if (response.ok) {
+      const data = await response.json();
+      setCategorias(data);
+    } else {
+      console.error("Erro ao buscar categorias");
+    }
   }
 
   async function retornarAutores() {
     const autores = await fetch("http://localhost:8080/autor/all");
     const data = await autores.json();
     setAutores(data);
+
+    fetch("http://localhost:8080/autor/all")
+    .then()
   }
 
   async function carregarLivro(id: number) {
