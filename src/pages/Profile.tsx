@@ -2,7 +2,7 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 
 export function Profile() {
-  const { logout } = useAuth();
+  const { logout, session } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -16,15 +16,20 @@ export function Profile() {
         <h2 className="text-2xl font-semibold text-center mb-4">Perfil</h2>
 
         <div className="mb-4">
+          <label className="block text-gray-600 text-sm font-medium">Nome completo:</label>
+          <p className="bg-gray-200 p-2 rounded-md">{session?.nome + " " + session?.sobrenome}</p>
+        </div>
+
+        <div className="mb-4">
           <label className="block text-gray-600 text-sm font-medium">ID:</label>
-          <p className="bg-gray-200 p-2 rounded-md">123456</p>
+          <p className="bg-gray-200 p-2 rounded-md">{session?.idUsuario}</p>
         </div>
 
         <div className="mb-4">
           <label className="block text-gray-600 text-sm font-medium">
             Email:
           </label>
-          <p className="bg-gray-200 p-2 rounded-md">usuario@email.com</p>
+          <p className="bg-gray-200 p-2 rounded-md">{session?.login}</p>
         </div>
 
         <div className="mb-4">
@@ -38,7 +43,7 @@ export function Profile() {
           <label className="block text-gray-600 text-sm font-medium">
             Cargo:
           </label>
-          <p className="bg-gray-200 p-2 rounded-md">Administrador</p>
+          <p className="bg-gray-200 p-2 rounded-md">{session?.cargos[0] === "ADMIN" ? "Administrador" : "Cliente"}</p>
         </div>
 
         <div className="flex gap-4">

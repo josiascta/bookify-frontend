@@ -22,7 +22,7 @@ export function Login() {
 
   async function login(loginDTO: Login) {
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     try {
       const response = await fetch("http://localhost:8080/auth/token", {
         method: "POST",

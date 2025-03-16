@@ -3,16 +3,17 @@ import { CreateBook } from "../pages/CreateBook";
 import { ListBooks } from "../pages/ListBooks";
 import { NotFound } from "../pages/NotFound";
 import { Layout } from "../components/Layout";
-import { Home } from "../pages/Home";
+import { HomeAdmin } from "../pages/PainelAdmin";
 import { Profile } from "../pages/Profile";
 import { UserList } from "../pages/UserList";
+
 
 //rotas do adm(talvez mude a home do adm)
 export function AdminRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
+        <Route index element={<HomeAdmin />} />
         <Route path="/createBook" element={<CreateBook />} />
         <Route path="/createBook/:id" element={<CreateBook />} />
         <Route path="/listBooks" element={<ListBooks />} />

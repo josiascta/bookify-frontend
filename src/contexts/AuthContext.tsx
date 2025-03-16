@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useState } from "react";
 import { useEffect } from "react";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 type AuthContext = {
   session: null | UserAPIResponse
@@ -19,11 +20,30 @@ export function AuthProvider({children}: {children: ReactNode}){
     localStorage.setItem("user", JSON.stringify(data));
   }
 
+  //mudar esse useEffect para verificar se ja existe um token valido no localstorage
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setSession(JSON.parse(storedUser));
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      try {
+        const decoded: JwtPayload = jwtDecode(token);
+        const currentTime = Math.floor(Date.now() / 1000); // Tempo atual em segundos
+
+        if (decoded.exp && decoded.exp < currentTime) {
+          console.warn("Token expirado. Fazendo logout...");
+          logout();
+        } else {
+          const storedUser = localStorage.getItem("user");
+          if (storedUser) {
+            setSession(JSON.parse(storedUser));
+          }
+        }
+      } catch (error) {
+        console.error("Token inválido. Fazendo logout...");
+        logout();
+      }
     }
+
     setIsLoadingSession(false);
   }, []);
 
