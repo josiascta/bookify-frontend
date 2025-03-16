@@ -52,7 +52,19 @@ export function Header() {
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 Listar Livro
+
               </Link>
+              <Link
+                to="/userList"
+                onClick={toggleDropdown}
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                Listar Usuários
+              </Link>
+
+
+              
+              
             </div>
           )}
         </div>

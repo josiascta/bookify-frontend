@@ -13,9 +13,21 @@ interface Book {
 export function ListBooks() {
   const [books, setBooks] = useState<Book[]>([]);
   const navigate = useNavigate();
+  const token = localStorage.getItem("token"); // Pegando o token do localStorage
 
+  // Se não houver token, redireciona para o login
   useEffect(() => {
-    fetch("http://localhost:8080/livro")
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    fetch("http://localhost:8080/livro", {
+      headers: {
+        Authorization: `Bearer ${token}`, // Adicionando o token
+        "Content-Type": "application/json",
+      },
+    })
       .then(response => response.json())
       .then(data => {
         console.log("Dados recebidos:", data); 
@@ -24,17 +36,28 @@ export function ListBooks() {
         }
       })
       .catch(error => console.error("Erro ao buscar livros:", error));
-  }, []); 
+  }, [token]); 
   
-
   function handleEdit(id: number) {
     navigate(`/createBook/${id}`);
   }
 
   function handleDelete(id: number) {
+    if (!token) {
+      alert("Você precisa estar autenticado para deletar um livro.");
+      navigate("/login");
+      return;
+    }
+
     const confirmDelete = window.confirm("Você deseja remover esse livro?");
     if (confirmDelete) {
-      fetch(`http://localhost:8080/livro/${id}`, { method: "DELETE" })
+      fetch(`http://localhost:8080/livro/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, // Adicionando o token
+          "Content-Type": "application/json",
+        },
+      })
         .then(() => setBooks(books.filter(book => book.id !== id)))
         .catch(error => console.error("Erro ao deletar livro:", error));
     }
@@ -77,4 +100,4 @@ export function ListBooks() {
       </div>
     </div>
   );
-}
+}  
