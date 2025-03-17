@@ -29,10 +29,9 @@ export function CreateBook() {
   const [autores, setAutores] = useState<Autor[]>([]);
   const [livroId, setLivroId] = useState<number | null>(null);
   const { id } = useParams();
+  const token = localStorage.getItem("token");
 
   async function retornarCategorias() {
-    const token = localStorage.getItem("token");
-  
     const response = await fetch("http://localhost:8080/categoria", {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -46,16 +45,18 @@ export function CreateBook() {
   }
 
   async function retornarAutores() {
-    const autores = await fetch("http://localhost:8080/autor/all");
+    const autores = await fetch("http://localhost:8080/autor/all", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     const data = await autores.json();
     setAutores(data);
 
-    fetch("http://localhost:8080/autor/all")
-    .then()
   }
 
   async function carregarLivro(id: number) {
-    const response = await fetch(`http://localhost:8080/livro/${id}`);
+    const response = await fetch(`http://localhost:8080/livro/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     const data = await response.json();
 
     const autoresIds = data.autores.map((autor: { id: number }) => autor.id);
@@ -90,6 +91,7 @@ export function CreateBook() {
     await fetch(url, {
       method: metodo,
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
