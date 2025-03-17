@@ -12,10 +12,11 @@ interface Book {
 
 export function ListBooks() {
   const [books, setBooks] = useState<Book[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const booksPerPage = 5;
   const navigate = useNavigate();
   const token = localStorage.getItem("token"); // Pegando o token do localStorage
 
-  // Se não houver token, redireciona para o login
   useEffect(() => {
     if (!token) {
       navigate("/login");
@@ -24,20 +25,20 @@ export function ListBooks() {
 
     fetch("http://localhost:8080/livro", {
       headers: {
-        Authorization: `Bearer ${token}`, // Adicionando o token
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     })
       .then(response => response.json())
       .then(data => {
-        console.log("Dados recebidos:", data); 
+        console.log("Dados recebidos:", data);
         if (books.length !== data.content?.length) {
           setBooks(data.content || []);
         }
       })
       .catch(error => console.error("Erro ao buscar livros:", error));
-  }, [token]); 
-  
+  }, [token]);
+
   function handleEdit(id: number) {
     navigate(`/createBook/${id}`);
   }
@@ -54,7 +55,7 @@ export function ListBooks() {
       fetch(`http://localhost:8080/livro/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token}`, // Adicionando o token
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       })
@@ -62,6 +63,10 @@ export function ListBooks() {
         .catch(error => console.error("Erro ao deletar livro:", error));
     }
   }
+
+  const indexOfLastBook = currentPage * booksPerPage;
+  const indexOfFirstBook = indexOfLastBook - booksPerPage;
+  const currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -71,7 +76,7 @@ export function ListBooks() {
         </a>
         <h2 className="text-lg font-semibold mb-4 text-center">Lista de Livros</h2>
         <ul className="space-y-4">
-          {books.map((book) => (
+          {currentBooks.map((book) => (
             <li key={book.id} className="p-4 border rounded-md shadow-sm flex justify-between items-center bg-gray-50 hover:shadow-lg transition-shadow">
               <div>
                 <p className="text-lg font-medium text-gray-900">{book.title}</p>
@@ -97,7 +102,24 @@ export function ListBooks() {
             </li>
           ))}
         </ul>
+        <div className="flex justify-between mt-4">
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md disabled:opacity-50"
+          >
+            Anterior
+          </button>
+          <span>Página {currentPage}</span>
+          <button
+            onClick={() => setCurrentPage(prev => (indexOfLastBook < books.length ? prev + 1 : prev))}
+            disabled={indexOfLastBook >= books.length}
+            className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md disabled:opacity-50"
+          >
+            Próxima
+          </button>
+        </div>
       </div>
     </div>
   );
-}  
+}

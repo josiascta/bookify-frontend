@@ -38,7 +38,7 @@ export function HomeAdmin() {
         <button
           className="w-48 h-48 bg-blue-600 text-white text-lg font-semibold rounded-lg 
                      hover:bg-blue-700 transform transition-all duration-300 hover:scale-105"
-          onClick={() => navigate("/editUser")}
+          onClick={() => navigate("/userList")}
         >
           Editar Usuário
         </button>
